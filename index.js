@@ -139,6 +139,14 @@ class Instructor extends Lambdasian {
     this.favLanguage = instructorAttrs.favLanguage;
     this.catchPhrase = instructorAttrs.catchPhrase;
   }
+  static randomPoints(student, subject, maxPoints) {
+    // STRETCH - Now that our students have a grade build out a method on the Instructor (this will be used by _BOTH_ instructors and PM's) that will randomly add or subtract points to a student's grade. _Math.random_ will help.
+    const previouslyHad = 0 + student.grade;
+    student.grade = Math.floor(Math.random()*100 % 2) === 0 ? (student.grade + Math.floor(Math.random()*maxPoints)):(student.grade - Math.floor(Math.random()*maxPoints));
+    const gradeDifference = (student.grade - previouslyHad);
+    const pointDirection = (gradeDifference > 0) ? "gained":"lost"
+    console.log(`${student.name} ${pointDirection} ${Math.abs(gradeDifference)} random points in ${subject}, ${student.grade}`);
+  }
   demo(subject) {
     return `Today we are learning about ${subject}`
   }
@@ -168,6 +176,8 @@ class Student extends Lambdasian {
     this.previousBackground = studentAttrs.previousBackground;
     this.className = studentAttrs.className;
     this.favSubjects = studentAttrs.favSubjects;
+    // STRETCH - Extend the functionality of the Student by adding a prop called grade and setting it equal to a number between 1-100.
+    this.grade = Math.floor(Math.random() * 100);
   }
   listSubjects() {
     return "Loving " + this.favSubjects.join(", ")
@@ -178,6 +188,20 @@ class Student extends Lambdasian {
   sprintChallenge(subject) {
     return `${this.name} has begun sprint challenge on ${subject}`
   }
+  graduate(){
+    /*
+      STRETCH - Add a graduate method to a student.
+                + This method, when called, will check the grade of the student and see if they're ready to graduate from Lambda School
+                + If the student's grade is above a 70% let them graduate! Otherwise go back to grading their assignments to increase their score.
+    */
+    if (this.grade > 70){
+      console.log(`${this.name} graduated with ${this.grade}%`);
+      return true;
+    }
+    Instructor.randomPoints(this, "cyber linguistics", 20);
+    this.graduate();
+  }
+
 }
 
 /*
@@ -229,3 +253,18 @@ if (typeof exports !== 'undefined') {
   if (Student) { module.exports.Student = Student }
   if (ProjectManager) { module.exports.ProjectManager = ProjectManager }
 }
+
+
+const brit = new Instructor({
+  name: "Brit", age: 32, location: "Canada"
+})
+
+const jacob = new ProjectManager({
+  name: "Jacob", age: 30, location: "Florida"
+})
+
+const trevor = new Student({
+  name: "Trevor", age: 42, location: "Philadelphia"
+})
+
+trevor.graduate();
